@@ -1,8 +1,8 @@
 const validator = require('@app-core/validator');
-const { parseInstruction } = require('./parse-instruction');
-const { validateTransaction } = require('./validate-transaction');
-const { executeTransaction } = require('./execute-transaction');
-const { buildResponse } = require('./build-response');
+const { parseInstruction } = require('./utils/parse-instruction');
+const { validateTransaction } = require('./utils/validate-transaction');
+const { executeTransaction } = require('./utils/execute-transaction');
+const { buildResponse } = require('./utils/build-response');
 const { throwAppError, ERROR_CODE } = require('@app-core/errors');
 const { PAYMENT_MESSAGES, STATUS_CODE_TO_MESSAGE } = require('@app/messages/payment');
 

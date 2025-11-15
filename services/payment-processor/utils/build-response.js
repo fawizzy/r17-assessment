@@ -1,4 +1,4 @@
-const { utilsSilentParseInt } = require('./utils');
+const { utilsSilentParseInt } = require('./miscellaneous');
 
 function buildResponse(parsed, validatedResult, execResult, originalAccountsOrder) {
   // parsed: from parseInstruction (may have nulls)
@@ -7,7 +7,12 @@ function buildResponse(parsed, validatedResult, execResult, originalAccountsOrde
   // originalAccountsOrder: the original request accounts array to preserve order when returning accounts array
 
   const type = parsed && parsed.type ? parsed.type : null;
-  const amount = validatedResult && validatedResult.valid ? validatedResult.amount : (parsed && parsed.amountRaw ? (utilsSilentParseInt(parsed.amountRaw) || null) : null);
+  const amount =
+    validatedResult && validatedResult.valid
+      ? validatedResult.amount
+      : parsed && parsed.amountRaw
+        ? utilsSilentParseInt(parsed.amountRaw) || null
+        : null;
   const currency = parsed && parsed.currency ? parsed.currency.toUpperCase() : null;
   const debitAccount = parsed && parsed.debit_account ? parsed.debit_account : null;
   const creditAccount = parsed && parsed.credit_account ? parsed.credit_account : null;
@@ -15,8 +20,16 @@ function buildResponse(parsed, validatedResult, execResult, originalAccountsOrde
 
   // default failure
   if (!validatedResult || !validatedResult.valid) {
-    const code = validatedResult ? validatedResult.status_code : (parsed && parsed.error ? parsed.error.status_code : 'SY03');
-    const reason = validatedResult ? validatedResult.status_reason : (parsed && parsed.error ? parsed.error.status_reason : 'Malformed instruction');
+    const code = validatedResult
+      ? validatedResult.status_code
+      : parsed && parsed.error
+        ? parsed.error.status_code
+        : 'SY03';
+    const reason = validatedResult
+      ? validatedResult.status_reason
+      : parsed && parsed.error
+        ? parsed.error.status_reason
+        : 'Malformed instruction';
     return {
       type: type || null,
       amount: amount || null,
@@ -27,14 +40,17 @@ function buildResponse(parsed, validatedResult, execResult, originalAccountsOrde
       status: 'failed',
       status_reason: reason,
       status_code: code,
-      accounts: []
+      accounts: [],
     };
   }
 
   // validated OK -> execResult determines status
   const status = execResult.status;
   const status_code = execResult.status_code;
-  const status_reason = status === 'successful' ? 'Transaction executed successfully' : 'Transaction scheduled for future execution';
+  const status_reason =
+    status === 'successful'
+      ? 'Transaction executed successfully'
+      : 'Transaction scheduled for future execution';
 
   // Build accounts array preserving original order
   const accountsOut = [];
@@ -65,7 +81,12 @@ function buildResponse(parsed, validatedResult, execResult, originalAccountsOrde
     status: status === 'successful' ? 'successful' : 'pending',
     status_reason,
     status_code,
-    accounts: accountsOut.map(a => ({ id: a.id, balance: a.balance, balance_before: a.balance_before, currency: a.currency }))
+    accounts: accountsOut.map((a) => ({
+      id: a.id,
+      balance: a.balance,
+      balance_before: a.balance_before,
+      currency: a.currency,
+    })),
   };
 }
 

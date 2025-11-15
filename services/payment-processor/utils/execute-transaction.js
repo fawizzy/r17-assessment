@@ -1,7 +1,12 @@
-const utils = require('./utils');
+const utils = require('./miscellaneous');
 
 function cloneAccount(a) {
-  return { id: a.id, balance: Number(a.balance), balance_before: Number(a.balance), currency: a.currency };
+  return {
+    id: a.id,
+    balance: Number(a.balance),
+    balance_before: Number(a.balance),
+    currency: a.currency,
+  };
 }
 
 function executeTransaction(validated) {
@@ -31,7 +36,7 @@ function executeTransaction(validated) {
       const creditAcc = cloneAccount(creditFound.account);
       debitAcc.balance = debitAcc.balance - amount;
       creditAcc.balance = creditAcc.balance + amount;
-      console.log(amount)
+      console.log(amount);
       return { status: 'successful', status_code: 'AP00', accounts: [debitAcc, creditAcc] };
     }
   }

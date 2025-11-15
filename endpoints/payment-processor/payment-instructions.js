@@ -1,6 +1,6 @@
 const { createHandler } = require('@app-core/server');
 const { appLogger } = require('@app-core/logger');
-const parseInstructionService = require('@app/services/payment-processor/parser');
+const parseInstructionService = require('@app/services/payment-processor/payment-instructions');
 
 module.exports = createHandler({
   path: '/payment-instructions',
